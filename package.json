@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "formik": "^2.4.6",
+    "react-router-dom": "^6.23.0",
+    "yup": "^1.4.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.3"
+  }
+}
