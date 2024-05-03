@@ -1,46 +1,50 @@
 import React, { useEffect, useState } from 'react';
 import Menu from './Menu/Menu';
 import GridNews from './Grid/GridNews';
-import { NewsArticle, initialItems } from './items/items';
-import Logout from './Auth/Logout';
-import Register from './Auth/Register';
+import { NewsArticle } from './items/items';
 import './App.css'; // Import the CSS file
 
 function App() {
   const [items, setItems] = useState<NewsArticle[]>([]);
   const [active, setActive] = useState<number>(1);
-  const [category, setCategory] = useState<string>("general");
-  const [loggedIn, setLoggedIn] = useState<boolean>(false);
+  const [category, setCategory] = useState<string>('general');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    fetch('https://newsapi.org/v2/everything?q=tesla&from=2024-04-02&sortBy=publishedAt&apiKey=730cb6248dba456a9740f8c152836660')
-    .then(res => res.json())
-    .then(data => setItems(data.articles))
-  }, [category])
+    setLoading(true);
+    setError('');
 
-  const handleLogin = () => {
-    setLoggedIn(true);
-  };
-
-  const handleLogout = () => {
-    setLoggedIn(false);
-  };
-
-  const handleRegister = () => {
-    setLoggedIn(true);
-  };
+    fetch(
+      `https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=730cb6248dba456a9740f8c152836660`
+    )
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setItems(data.articles);
+      })
+      .catch((error) => {
+        setError(error.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [category]);
 
   return (
     <div className="App">
       <h1 className="title">See The Latest News</h1>
-      {loggedIn ? (
-        <>
-          <Menu active={active} setActive={setActive} setCategory={setCategory} /> {}
-          <GridNews items={items} />
-          <Logout onLogout={handleLogout} />
-        </>
+      <Menu active={active} setActive={setActive} setCategory={setCategory} />
+      {loading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p>Error: {error}</p>
       ) : (
-        <Register onRegister={handleRegister} />
+        <GridNews items={items} />
       )}
     </div>
   );

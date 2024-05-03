@@ -1,4 +1,3 @@
-
 import React from 'react';
 import News from '../News/News';
 
@@ -9,12 +8,11 @@ interface GridNewsProps {
 const GridNews: React.FC<GridNewsProps> = ({ items }) => {
     return (
         <div> 
-            {items.map((item, i) => (
+            {items && items.map((item, i) => (
                 <News key={i} item={item}/>
             ))}
         </div>
     );
 }
 
-
-export default GridNews
+export default GridNews;
